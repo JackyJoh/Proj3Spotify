@@ -86,7 +86,7 @@ int main()
     Song* songList = new Song[114000];
     ifstream file("data/dataset.csv");
 
-
+    cout << "test change" << endl;
     // Skip header line
     getline(file, line);
     // Read data line by line
