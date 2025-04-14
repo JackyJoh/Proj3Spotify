@@ -3,6 +3,10 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include "rapidcsv.h"
+#include <chrono>
+
+
 
 
 using namespace std;
@@ -13,43 +17,56 @@ struct Song {
     string artist;
     string album_name;
     string track_name;
-    string popularity;
-    string duration_ms;
-    string explicit_content;
-    string danceability;
-    string energy;
-    string key;
-    string loudness;
-    string mode;
-    string speechiness;
-    string acousticness;
+    int popularity;
+    int duration_ms;
+    bool explicit_content;
+    double danceability;
+    double energy;
+    int key;
+    double loudness;
+    int mode;
+    double speechiness;
+    double acousticness;
     string instrumentalness;
-    string liveness;
-    string valence;
-    string tempo;
-    string time_signature;
+    double liveness;
+    double valence;
+    double tempo;
+    int time_signature;
     string genre;
 
     // Parameterized constructor
-    Song(int serial, string track_id, string artist, string album_name, string track_name,
-         string popularity, string duration_ms, string explicit_content, string danceability,
-         string energy, string key, string loudness, string mode, string speechiness,
-         string acousticness, string instrumentalness, string liveness, string valence,
-         string tempo, string time_signature, string genre)
-        : serial(serial), track_id(track_id), artist(artist), album_name(album_name),
-          track_name(track_name), popularity(popularity), duration_ms(duration_ms),
-          explicit_content(explicit_content), danceability(danceability), energy(energy),
-          key(key), loudness(loudness), mode(mode), speechiness(speechiness),
-          acousticness(acousticness), instrumentalness(instrumentalness),
-          liveness(liveness), valence(valence), tempo(tempo), time_signature(time_signature),
-          genre(genre) {}
+    Song(const vector<string>& values) {
+        if (values.size() >= 21) {  // Ensure we have all needed values
+            serial = stoi(values[0]);
+            track_id = values[1];
+            artist = values[2];
+            album_name = values[3];
+            track_name = values[4];
+            popularity = stoi(values[5]);
+            duration_ms = stoi(values[6]);
+            explicit_content = values[7] == "True";
+            danceability = stod(values[8]);
+            energy = stod(values[9]);
+            key = stoi(values[10]);
+            loudness = stod(values[11]);
+            mode = stoi(values[12]);
+            speechiness = stod(values[13]);
+            acousticness = stod(values[14]);
+            instrumentalness = values[15];
+            liveness = stod(values[16]);
+            valence = stod(values[17]);
+            tempo = stod(values[18]);
+            time_signature = stoi(values[19]);
+            genre = values[20];
+        }
+    }
 
     // Default constructor
-    Song()
-        : serial(0), track_id(""), artist(""), album_name(""), track_name(""),
-          popularity(""), duration_ms(""), explicit_content(""), danceability(""),
-          energy(""), key(""), loudness(""), mode(""), speechiness(""),
-          acousticness(""), instrumentalness(""), liveness(""), valence(""),tempo(""), time_signature(""), genre("") {}
+    // Song()
+    //     : serial(0), track_id(""), artist(""), album_name(""), track_name(""),
+    //       popularity(""), duration_ms(""), explicit_content(""), danceability(""),
+    //       energy(""), key(""), loudness(""), mode(""), speechiness(""),
+    //       acousticness(""), instrumentalness(""), liveness(""), valence(""),tempo(""), time_signature(""), genre("") {}
 
 };
 
@@ -80,70 +97,17 @@ void printSongColumns(Song song) {
 
 int main()
 {
-    // vector<Song> songList;
-    string line;
-    int index=0;
-    Song* songList = new Song[114000];
-    ifstream file("data/dataset.csv");
-
-    cout << "test change" << endl;
-    // Skip header line
-    getline(file, line);
-    // Read data line by line
-    while (getline(file, line))
-    {
-        //cout << line << "\n";
-        stringstream ss(line);
-        Song song;
 
 
+    rapidcsv::Document songs("data/dataset.csv"); //sets the doc to read from
+    Song song( songs.GetRow<string>(9)); //creates a song struct from the 10th row of data
+    printSongColumns(song);
 
-        // Parse CSV line
-        for (int i = 0; i < 21; i++)
-        {
+    //est 750ms to save all songs as Song structs
 
-            string item = (line.substr(0, line.find(",")));
-            //cout << item << endl;// Extract the value before the comma
-            line = line.substr(line.find(",") + 1);;// Remove the extracted value from the line
-                switch (i) {
-                case 0: song.serial = index; break;
-                case 1: song.track_id = item; break;
-                case 2: song.artist = item; break;
-                case 3: song.album_name = item; break;
-                case 4: song.track_name = item; break;
-                case 5: song.popularity = item; break;
-                case 6: song.duration_ms = item; break;
-                case 7: song.explicit_content = item; break;
-                case 8: song.danceability = item; break;
-                case 9: song.energy = item; break;
-                case 10: song.key = item; break;
-                case 11: song.loudness = item; break;
-                case 12: song.mode = item; break;
-                case 13: song.speechiness = item; break;
-                case 14: song.acousticness = item; break;
-                case 15: song.instrumentalness = item; break;
-                case 16: song.liveness = item; break;
-                case 17: song.valence = item; break;
-                case 18: song.tempo = item; break;
-                case 19: song.time_signature = item; break;
-                case 20: song.genre = item; break;
-                default: break;
-            }
-
-
-        }
-            // song.serial = songList.size() + 1; // Assign a serial number
-        //cout << index << endl;
-            songList[index] = song;
-        index++;
-    }
-    //cout << "Successfully loaded " << songList.length() << " songs." << endl;
-    for (int i = 0; i < 3; i++)
-    {
-        printSongColumns(songList[i]);
-        cout << endl;
-    }
-
+    //vector<string> col =  songs.GetColumn<string>("artists"); //reads all data from artists (could be used for algorithm implementation?)
+    //vector<std::string> row = songs.GetRow<string>(5); //gets data from a specific row
+    //string artist = songs.GetCell<string>("artists", 5);  //Get the artist of the 6th row (index is 0 based)
 
 
     return 0;
