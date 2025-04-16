@@ -104,20 +104,15 @@
         return escaped;
     }
 
-    string getSong(int songId) {
-        rapidcsv::Document songs("data/dataset.csv"); //sets the doc to read from
-        Song song( songs.GetRow<string>(songId)); //creates a song struct from the 10th row of data
+    string strip(const string& str)
+    {
+        string::size_type start = 0;
+        string::size_type end = str.find(";");
+        return str.substr(start, end - start);
 
-        std::stringstream json;
-        json << "{\n";
-        json << "    \"artist\": \"" << escapeJSON(song.artist) << "\",\n";
-        json << "    \"album\": \"" << escapeJSON(song.album_name) << "\",\n";
-        json << "    \"trackName\": \"" << escapeJSON(song.track_name) << "\"\n";
-        json << "}";
-        return json.str();
-
-        return json.str();
     }
+
+
 
 
 

@@ -17,42 +17,68 @@ std::string get(int id) {
            "\nArtist: Example Artist";
 }
 
-// int main() {
-//     httplib::Server svr;
-//
-//     // Handle GET request
-//     svr.Get("/song", [](const httplib::Request& req, httplib::Response& res) {
-//         std::string song = getSong(100);
-//         res.set_content(song, "text/plain");
-//     });
-//
-//     std::cout << "Server starting on port 8080..." << std::endl;
-//
-//     // Add error handling for server start
-//     if (!svr.listen("localhost", 8080)) {
-//         std::cerr << "Failed to start server!" << std::endl;
-//         return 1;
-//     }
-//
-//     return 0;
-//}
+//Pass in document to avoid loading multiple times
+string getSong(int songId, rapidcsv::Document doc) {
+
+    Song song( doc.GetRow<string>(songId)); //creates a song struct from the 10th row of data
+
+    std::stringstream json;
+    json << "{\n";
+    json << "    \"artist\": \"" << strip(escapeJSON(song.artist)) << "\",\n";
+    json << "    \"album\": \"" << strip(escapeJSON(song.album_name)) << "\",\n";
+    json << "    \"trackName\": \"" << strip(escapeJSON(song.track_name)) << "\"\n";
+    json << "}";
+    return json.str();
+
+    //for all 7 songs make the titles dependent on the node
+    //ex. for node 3, do artist "    \"artist3\": \"" << strip(escapeJSON(song.artist)) << "\",\n";
+    //and in js make id artist3.textContent = data.artist3
+}
+
+
 int main() {
     httplib::Server svr;
+    rapidcsv::Document songs("data/dataset.csv"); //sets the doc to read from
 
 
-    svr.Get("/", [](const httplib::Request&, httplib::Response& res) {
-        // Get song data
-        std::string song_data = getSong(100000);
-
-        // Set response headers and content
-        res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_header("Content-Type", "application/json");
-        res.set_content(song_data, "application/json");
+    svr.Options(".*", [](const auto& req, auto& res) {
+        res.set_header("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
+        res.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        res.set_header("Access-Control-Allow-Headers", "Content-Type");
+        return res.set_content("", "text/plain");
     });
 
-    std::cout << "Starting server on port 8080..." << std::endl;
-    svr.listen("0.0.0.0", 8080);
+    svr.Post("/updateSong", [songs](const httplib::Request &req, httplib::Response &res) {
+        try {
+            res.set_header("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
+
+            string body = req.body;
+            // size_t msgStart = body.find("\"message\"");
+            // size_t colonPos = body.find(":", msgStart);
+            // size_t startQuote = body.find("\"", colonPos);
+            // size_t endQuote = body.find("\"", startQuote + 1);
+            string receivedSong = body;
+
+            cout << "Received song name: " << receivedSong << endl;
+
+
+            // Create JSON response with song details
+            int songIndex = stoi(receivedSong);
+            stringstream response;
+            response << getSong(songIndex, songs);
+            //cout << getSong(songIndex, songs)  << endl;
 
 
 
+            res.set_content(response.str(), "application/json");
+        } catch (const exception& e) {
+            stringstream error_response;
+            error_response << "{\"status\": \"error\", \"message\": \"" << e.what() << "\"}";
+            res.set_content(error_response.str(), "application/json");
+        }
+    });
+
+    cout << "Server started on port 8080..." << endl;
+    svr.listen("localhost", 8080);
+    return 0;
 }
