@@ -5,6 +5,7 @@
 #include "rapidcsv.h"
 #include "backend.h"
 
+
 using namespace std;
 
 
@@ -38,15 +39,20 @@ std::string get(int id) {
 int main() {
     httplib::Server svr;
 
+
     svr.Get("/", [](const httplib::Request&, httplib::Response& res) {
         // Get song data
-        std::string song_data = getSong(40000);
+        std::string song_data = getSong(100000);
 
         // Set response headers and content
+        res.set_header("Access-Control-Allow-Origin", "*");
         res.set_header("Content-Type", "application/json");
         res.set_content(song_data, "application/json");
     });
 
-    std::cout << "Starting server on port 3000..." << std::endl;
-    svr.listen("0.0.0.0", 3000);
+    std::cout << "Starting server on port 8080..." << std::endl;
+    svr.listen("0.0.0.0", 8080);
+
+
+
 }
