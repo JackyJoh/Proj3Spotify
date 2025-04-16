@@ -1,0 +1,127 @@
+.binary-tree {
+    width: fit-content;
+    transform: scale(1);
+  }
+  
+  .binary-tree div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr auto;
+    gap: 3rem;
+    margin-top: 0rem;
+    position: relative;
+  }
+  
+  .binary-tree span {
+    grid-column: 1 / 3;
+    background-color: #282828;
+    padding: 10px;
+    border-radius: 10px;
+    width: auto;
+    height: auto;
+    display: grid;
+    place-items: center;
+    margin: auto auto;
+    transition: background-color 0.3s;
+  }
+  
+.binary-tree span:hover {
+    background-color: #383838;
+    
+}
+  
+.binary-tree span::before {
+    content: "";
+    position: absolute;
+    width: 50%;
+    height: 3rem;
+    left: 50%;
+    top: 0;
+    transform: translateY(-100%);
+    background: linear-gradient(to bottom right, #0000 48%, #E17564 0 52%, #0000 0);
+    transition: background 0.3s;
+}
+
+/* .binary-tree span:hover::before {
+    background: linear-gradient(to bottom right, #0000 48%, #64E1A1 0 52%, #0000 0);
+} */
+
+.binary-tree :nth-child(3) > span::before {
+    left: auto;
+    right: 50%;
+    background: linear-gradient(to bottom left, #0000 48%, #E17564 0 52%, #0000 0);
+}
+
+/* .binary-tree :nth-child(3) > span:hover::before {
+    background: linear-gradient(to bottom left, #0000 48%, #64E1A1 0 52%, #0000 0);
+} */
+  .binary-tree > div > span::before {
+    content: none;
+  }
+
+
+
+.song-square {
+    display: inline-block;
+    background: #2a2a2a;
+    border-radius: 8px;
+    margin: 0px;
+    min-width: 200px;
+    max-width: 200px;
+    height: auto;
+    /* box-shadow: 0 2px 4px rgba(0,0,0,0.2); */
+}
+.song-name {
+    font-weight: bold;
+    color: #ffffff;
+    display: block;
+    margin-bottom: 0px;
+    font-size: 1.3rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 10px 0px 0px 0px;
+    padding: 0px 10px 0px 10px;
+    max-width: 100%; /* Ensures text is constrained within the container */
+}
+
+.artist-name {
+    color: #b3b3b3;
+    display: block;
+    font-size: 1rem;
+    margin: 13px 0px 0px 0px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.album-name {
+    color: #808080;
+    display: block;
+    font-size: 13px;
+    font-style: italic;
+    margin: 3px 0px 0px 0px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.score {
+    color: #1DB954;
+    display: block;
+    margin: 13px 0px 6px 0px;
+
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.title {
+    color: #ffffff;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    text-align: center;
+    display: flex;
+}

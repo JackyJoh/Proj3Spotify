@@ -111,7 +111,10 @@
         return str.substr(start, end - start);
 
     }
-
+    double randomNumber()
+    {
+        return 1.0 + (rand() % 100) + (static_cast<double>(rand()) / RAND_MAX);
+    }
 
 
 

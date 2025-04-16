@@ -9,14 +9,6 @@
 using namespace std;
 
 
-
-std::string get(int id) {
-    // Hardcoded example song
-    return "Song ID: " + std::to_string(id) +
-           "\nTitle: Example Song"
-           "\nArtist: Example Artist";
-}
-
 //Pass in document to avoid loading multiple times
 string getSong(int songId, rapidcsv::Document doc) {
 
@@ -26,7 +18,9 @@ string getSong(int songId, rapidcsv::Document doc) {
     json << "{\n";
     json << "    \"artist\": \"" << strip(escapeJSON(song.artist)) << "\",\n";
     json << "    \"album\": \"" << strip(escapeJSON(song.album_name)) << "\",\n";
-    json << "    \"trackName\": \"" << strip(escapeJSON(song.track_name)) << "\"\n";
+    json << "    \"trackName\": \"" << strip(escapeJSON(song.track_name)) << "\",\n";
+    json << "    \"score\": \"" << escapeJSON(to_string(randomNumber())) << "\"\n";
+
     json << "}";
     return json.str();
 
@@ -42,7 +36,8 @@ int main() {
 
 
     svr.Options(".*", [](const auto& req, auto& res) {
-        res.set_header("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
+        //res.set_header("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
+        res.set_header("Access-Control-Allow-Origin", "http://localhost:63342");
         res.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         res.set_header("Access-Control-Allow-Headers", "Content-Type");
         return res.set_content("", "text/plain");
@@ -50,20 +45,20 @@ int main() {
 
     svr.Post("/updateSong", [songs](const httplib::Request &req, httplib::Response &res) {
         try {
-            res.set_header("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
+            res.set_header("Access-Control-Allow-Origin", "http://localhost:63342");
 
             string body = req.body;
             // size_t msgStart = body.find("\"message\"");
             // size_t colonPos = body.find(":", msgStart);
             // size_t startQuote = body.find("\"", colonPos);
             // size_t endQuote = body.find("\"", startQuote + 1);
-            string receivedSong = body;
+            string recieved = body;
 
-            cout << "Received song name: " << receivedSong << endl;
+            //cout << "Received song name: " << receivedSong << endl;
 
 
-            // Create JSON response with song details
-            int songIndex = stoi(receivedSong);
+            //Create JSON response with song details
+            int songIndex = stoi(recieved);
             stringstream response;
             response << getSong(songIndex, songs);
             //cout << getSong(songIndex, songs)  << endl;
