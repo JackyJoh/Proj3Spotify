@@ -4,7 +4,7 @@ COP3530 Proj3Spotify
 
 Assuming all extensions/apps are installed:
 Edit the "Proj3Spotify" run configuration and add the following to "Before Launch" if not already configured:
-"Launch Web Browser" with it set to this link: http://localhost:63342/Proj3Spotify/frontEnd/index.html?_ijt=8q59lo88vi3g9fh7g24vii6pbe
+"Launch Web Browser" with it set to this link: http://localhost:63342/Proj3Spotify/frontEnd/index.html
 Also make sure to remove the "build" step in before launch to reduce launch time.
 Then to run just press run and it should take you to the local web page and the server should boot, allowing you to easily test the current version.
 
