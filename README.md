@@ -32,7 +32,7 @@ Members:
 //Song song(songs.GetRow<string>(int index)); //creates a song struct from the index+1 row of data (0 indexed csv WITH header)
 Ex. //Song song(songs.GetRow<string>(1)); creates a valid Song for the first song in the dataset
 
-*Getting a specific row*
+*Getting a specific column*
 
 //vector<string> col =  songs.GetColumn<string>(string rowName);
 This reads data from a specifc column and stores in vector
