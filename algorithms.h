@@ -60,42 +60,87 @@ class minHeap {
         }
 };
 
+// float getScore(Song* ref, Song* comp) {
+//     float score = 0;
+//     if (ref->artist == comp->artist) {
+//         if (ref->album_name == comp->album_name) {
+//             score += 0.3;
+//         } else {
+//             score += 0.2;
+//         }
+//     }
+//     if (comp->loudness/ref->loudness >= 0.9 && comp->loudness/ref->loudness <= 1.1) {
+//         score += 0.1;
+//     } else if (comp->loudness/ref->loudness >= 0.8 && comp->loudness/ref->loudness <= 1.2) {
+//         score += 0.05;
+//     }
+//     if (comp->genre == ref->genre) {
+//         score += 0.1;
+//     }
+//     if (comp->tempo/ref->tempo >= 0.9 && comp->tempo/ref->tempo <= 1.1) {
+//         score += 0.15;
+//     } else if (comp->tempo/ref->tempo >= 0.8 && comp->tempo/ref->tempo <= 1.2) {
+//         score += 0.05;
+//     }
+//     if (comp->mode == ref->mode) {
+//         if (comp->mode == 1) {
+//             score += 0.15;
+//         } else {
+//             score += 0.05;
+//         }
+//     }
+//     if (comp->time_signature == ref->time_signature) {
+//         score += 0.1;
+//     }
+//     if (comp->liveness/ref->liveness >= 0.9 && comp->liveness/ref->liveness <= 1.1) {
+//         score += 0.1;
+//     }
+//     return score;
+// }
+// Added artist and album boosts
 float getScore(Song* ref, Song* comp) {
     float score = 0;
+    float albumBoost=1;
+    float artistBoost=1;
+    // Artist and album matching (0.25 total)
     if (ref->artist == comp->artist) {
+        score += 0.12;
+        albumBoost = 1.05;
         if (ref->album_name == comp->album_name) {
-            score += 0.3;
-        } else {
-            score += 0.2;
+            score += 0.10;
+            albumBoost = 1.05;
         }
     }
-    if (comp->loudness/ref->loudness >= 0.9 && comp->loudness/ref->loudness <= 1.1) {
-        score += 0.1;
-    } else if (comp->loudness/ref->loudness >= 0.8 && comp->loudness/ref->loudness <= 1.2) {
-        score += 0.05;
-    }
+
+    // Genre matching (0.20)
     if (comp->genre == ref->genre) {
-        score += 0.1;
+        score += 0.20;
     }
-    if (comp->tempo/ref->tempo >= 0.9 && comp->tempo/ref->tempo <= 1.1) {
-        score += 0.15;
-    } else if (comp->tempo/ref->tempo >= 0.8 && comp->tempo/ref->tempo <= 1.2) {
-        score += 0.05;
-    }
+
+    // Tempo difference (0.15)
+    float tempoDiff = abs(1 - (comp->tempo / ref->tempo));
+    score += (0.15f * (1 - tempoDiff));
+
+    // Loudness difference (0.10)
+    float loudnessDiff = abs(1 - (comp->loudness / ref->loudness));
+    score += (0.10f * (1 - loudnessDiff));
+
+    // Mode and time signature (0.10 total)
     if (comp->mode == ref->mode) {
-        if (comp->mode == 1) {
-            score += 0.15;
-        } else {
-            score += 0.05;
-        }
+        score += 0.05;
     }
     if (comp->time_signature == ref->time_signature) {
-        score += 0.1;
+        score += 0.05;
     }
-    if (comp->liveness/ref->liveness >= 0.9 && comp->liveness/ref->liveness <= 1.1) {
-        score += 0.1;
-    }
-    return score;
+
+    // Liveness and energy differences (0.20 total)
+    float livenessDiff = abs(1 - (comp->liveness / ref->liveness));
+    score += (0.10f * (1 - livenessDiff));
+
+    float energyDiff = abs(1 - (comp->energy / ref->energy));
+    score += (0.10f * (1 - energyDiff));
+
+    return score * albumBoost * artistBoost; // Total possible score = 1.0
 }
 
 vector<pair<Song*, float>> mostSimilar(Song* ref, vector<Song*>& allS) {
