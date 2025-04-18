@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"
+    href="./style.css" />
+    <title>Tree Model</title>
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+            margin: 0;
+            background-color: #121212;
+            color: white;
+        }
+      .container {
+        display: flex;
+            text-align: center;
+            align-items: flex-end;
+            justify-content: center;
+            height: auto;
+            width: auto;
+            
+        }
+
+        .card {
+            background-color: #282828;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: left;
+            transition: background-color 0.3s;
+            
+        }
+        a {
+            text-decoration: none;
+            color: white;
+        }
+        .tree {
+            display: flex;
+            flex-direction: column;
+            align-self: center;
+            justify-content: center;
+            align-items: center;
+            height: auto;;
+            width: 100%;
+            position: relative;
+            
+  
+        /* #ui {
+            position: absolute;
+            left: 5%;
+            bottom: 5%;
+
+        } */
+
+        }
+        button {
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: relative;
+            bottom: 50px;
+            color: white;
+            
+        }
+
+        #ui {
+            position: absolute;
+            left: 5%;
+            bottom: 5%;
+        }
+        
+        
+        
+            
+    </style>
+  </head>
+
+    <body>
+
+
+    <!-- <div class="tree">
+
+        <article class="binary-tree">
+            <div>
+              <span >4</span>
+              <div>
+                <span>2</span>
+                <div>
+                  <span>1</span>
+                  <div></div>
+                  <div></div>
+                </div>
+                <div>
+                  <span>3</span>
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+              <div>
+                <span>6</span>
+                <div>
+                  <span>5</span>
+                  <div></div>
+                  <div></div>
+                </div>
+                <div>
+                  <span>7</span>
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+
+
+    </div> -->
+    <div class="tree">
+        <div class="title">Max Heap Representation</div>
+    <article class="binary-tree">
+        
+        <div>
+            <span class="song-square">
+                <p  id="test" class="song-name">Testing</p>
+                <p class="artist-name">Ross Copperman</p>
+                <p class="album-name">Hunger</p>
+                <p class="score">Score: 8.5</p>
+            </span>
+          <div>
+            <span class="song-square">
+                <p class="song-name">Song Name Here</p>
+                <p class="artist-name">Artist Name</p>
+                <p class="album-name">Album Name</p>
+                <p class="score">Score: 8.5</p>
+            </span>
+            <div>
+                <span class="song-square">
+                    <p class="song-name">Song Name Here</p>
+                    <p class="artist-name">Artist Name</p>
+                    <p class="album-name">Album Name</p>
+                    <p class="score">Score: 8.5</p>
+                </span>
+              <div></div>
+              <div></div>
+            </div>
+            <div>
+                <span class="song-square">
+                    <p class="song-name">Song Name Here</p>
+                    <p class="artist-name">Artist Name</p>
+                    <p class="album-name">Album Name</p>
+                    <p class="score">Score: 8.5</p>
+                </span>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+          <div>
+            <span class="song-square">
+                <p class="song-name">Many Men</p>
+                <p class="artist-name">50 Cent</p>
+                <p class="album-name">Get Rich or Die Tryin'</p>
+                <p class="score">Score: 8.5</p>
+            </span>
+            <div>
+                <span class="song-square">
+                    <p class="song-name">Holding on and Letting Go</p>
+                    <p class="artist-name">Artist Name</p>
+                    <p class="album-name">Album Name</p>
+                    <p class="score">Score: 8.5</p>
+                </span>
+              <div></div>
+              <div></div>
+            </div>
+            <div>
+                <span class="song-square">
+                    <p class="song-name">Ghost - Acoustic</p>
+                    <p class="artist-name">Ben Woodard</p>
+                    <p class="album-name">Ghost (Acoustic)</p>
+                    <p class="score">Score: 8.5</p>
+                </span>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+    </article>
+</div>
+
+   
+        <div class="container">
+        <input type="text" id="userInput" placeholder="Enter Song Index">
+        <button class="card"onclick="updateSong()">Update Song</button>
+        <div id="status">Status: Ready</div>
+            <!-- <button class="card" onclick="getSongData()">Update Song</button> -->
+        </div>
+        
+        <div class="container">
+            <a href="temp.html" id="ui"class="card" >UI Example</a>  
+        </div>
+
+
+    </body>
+
+    <script>
+    function updateSong() {
+        const index = document.getElementById('userInput').value;
+        const statusDiv = document.getElementById('status');
+        
+        
+        statusDiv.textContent = 'Status: Sending request...';
+
+        //Send request to server
+        fetch('http://localhost:8080/updateSong', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(parseInt(index))
+        })
+
+        .then(response => response.json())
+        .then(data => {
+          
+            //Update squares and/or specific elements with the new data
+            const songSquares = document.querySelectorAll('.song-square');
+            songSquares.forEach(square => {
+                square.querySelector('.song-name').textContent = data.trackName;
+                square.querySelector('.artist-name').textContent = data.artist;
+                square.querySelector('.album-name').textContent = data.album;
+                square.querySelector('.score').textContent = `Score: ${data.score}`;
+            });
+             document.getElementById('test').textContent = "Filler Data";
+
+            
+            statusDiv.textContent = 'Status: Updated successfully!';
+        })
+
+        //Error status
+        .catch(error => {
+            console.error('Error:', error);
+            statusDiv.textContent = 'Status: Error occurred!';
+        });
+    }
+    
+
+
+
+    </script>
+</html>

@@ -1,114 +1,79 @@
-#include <fstream>
-#include <sstream>
-#include <string>
 #include <iostream>
-#include <vector>
+#include <string>
+#include <sstream>
+#include "httplib.h"
 #include "rapidcsv.h"
-#include <chrono>
-
-
+#include "backend.h"
 
 
 using namespace std;
 
-struct Song {
-    int serial;
-    string track_id;
-    string artist;
-    string album_name;
-    string track_name;
-    int popularity;
-    int duration_ms;
-    bool explicit_content;
-    double danceability;
-    double energy;
-    int key;
-    double loudness;
-    int mode;
-    double speechiness;
-    double acousticness;
-    string instrumentalness;
-    double liveness;
-    double valence;
-    double tempo;
-    int time_signature;
-    string genre;
 
-    // Parameterized constructor
-    Song(const vector<string>& values) {
-        if (values.size() >= 21) {  // Ensure we have all needed values
-            serial = stoi(values[0]);
-            track_id = values[1];
-            artist = values[2];
-            album_name = values[3];
-            track_name = values[4];
-            popularity = stoi(values[5]);
-            duration_ms = stoi(values[6]);
-            explicit_content = values[7] == "True";
-            danceability = stod(values[8]);
-            energy = stod(values[9]);
-            key = stoi(values[10]);
-            loudness = stod(values[11]);
-            mode = stoi(values[12]);
-            speechiness = stod(values[13]);
-            acousticness = stod(values[14]);
-            instrumentalness = values[15];
-            liveness = stod(values[16]);
-            valence = stod(values[17]);
-            tempo = stod(values[18]);
-            time_signature = stoi(values[19]);
-            genre = values[20];
-        }
-    }
+//Pass in document to avoid loading multiple times
+string getSong(int songId, rapidcsv::Document doc) {
 
-    // Default constructor
-    // Song()
-    //     : serial(0), track_id(""), artist(""), album_name(""), track_name(""),
-    //       popularity(""), duration_ms(""), explicit_content(""), danceability(""),
-    //       energy(""), key(""), loudness(""), mode(""), speechiness(""),
-    //       acousticness(""), instrumentalness(""), liveness(""), valence(""),tempo(""), time_signature(""), genre("") {}
+    Song song( doc.GetRow<string>(songId)); //creates a song struct from the 10th row of data
 
-};
+    std::stringstream json;
+    json << "{\n";
+    json << "    \"artist\": \"" << strip(escapeJSON(song.artist)) << "\",\n";
+    json << "    \"album\": \"" << strip(escapeJSON(song.album_name)) << "\",\n";
+    json << "    \"trackName\": \"" << strip(escapeJSON(song.track_name)) << "\",\n";
+    json << "    \"score\": \"" << escapeJSON(to_string(randomNumber())) << "\"\n";
 
-void printSongColumns(Song song) {
-    cout << "1. Serial: " << song.serial << endl;
-    cout << "2. Track ID: " << song.track_id << endl;
-    cout << "3. Artist: " << song.artist << endl;
-    cout << "4. Album Name: " << song.album_name << endl;
-    cout << "5. Track Name: " << song.track_name << endl;
-    cout << "6. Popularity: " << song.popularity << endl;
-    cout << "7. Duration (ms): " << song.duration_ms << endl;
-    cout << "8. Explicit Content: " << song.explicit_content << endl;
-    cout << "9. Danceability: " << song.danceability << endl;
-    cout << "10. Energy: " << song.energy << endl;
-    cout << "11. Key: " << song.key << endl;
-    cout << "12. Loudness: " << song.loudness << endl;
-    cout << "13. Mode: " << song.mode << endl;
-    cout << "14. Speechiness: " << song.speechiness << endl;
-    cout << "15. Acousticness: " << song.acousticness << endl;
-    cout << "16. Instrumentalness: " << song.instrumentalness << endl;
-    cout << "17. Liveness: " << song.liveness << endl;
-    cout << "18. Valence: " << song.valence << endl;
-    cout << "19. Tempo: " << song.tempo << endl;
-    cout << "20. Time Signature: " << song.time_signature << endl;
-    cout << "21. Genre: " << song.genre << endl;
-    cout << "------------------------" << endl;
+    json << "}";
+    return json.str();
+
+    //for all 7 songs make the titles dependent on the node
+    //ex. for node 3, do artist "    \"artist3\": \"" << strip(escapeJSON(song.artist)) << "\",\n";
+    //and in js make id artist3.textContent = data.artist3
 }
 
-int main()
-{
 
-
+int main() {
+    httplib::Server svr;
     rapidcsv::Document songs("data/dataset.csv"); //sets the doc to read from
-    Song song( songs.GetRow<string>(9)); //creates a song struct from the 10th row of data
-    printSongColumns(song);
-
-    //est 750ms to save all songs as Song structs
-
-    //vector<string> col =  songs.GetColumn<string>("artists"); //reads all data from artists (could be used for algorithm implementation?)
-    //vector<std::string> row = songs.GetRow<string>(5); //gets data from a specific row
-    //string artist = songs.GetCell<string>("artists", 5);  //Get the artist of the 6th row (index is 0 based)
 
 
+    svr.Options(".*", [](const auto& req, auto& res) {
+        //res.set_header("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
+        res.set_header("Access-Control-Allow-Origin", "http://localhost:63342");
+        res.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        res.set_header("Access-Control-Allow-Headers", "Content-Type");
+        return res.set_content("", "text/plain");
+    });
+
+    svr.Post("/updateSong", [songs](const httplib::Request &req, httplib::Response &res) {
+        try {
+            res.set_header("Access-Control-Allow-Origin", "http://localhost:63342");
+
+            string body = req.body;
+            // size_t msgStart = body.find("\"message\"");
+            // size_t colonPos = body.find(":", msgStart);
+            // size_t startQuote = body.find("\"", colonPos);
+            // size_t endQuote = body.find("\"", startQuote + 1);
+            string recieved = body;
+
+            //cout << "Received song name: " << receivedSong << endl;
+
+
+            //Create JSON response with song details
+            int songIndex = stoi(recieved);
+            stringstream response;
+            response << getSong(songIndex, songs);
+            //cout << getSong(songIndex, songs)  << endl;
+
+
+
+            res.set_content(response.str(), "application/json");
+        } catch (const exception& e) {
+            stringstream error_response;
+            error_response << "{\"status\": \"error\", \"message\": \"" << e.what() << "\"}";
+            res.set_content(error_response.str(), "application/json");
+        }
+    });
+
+    cout << "Server started on port 8080..." << endl;
+    svr.listen("localhost", 8080);
     return 0;
 }
