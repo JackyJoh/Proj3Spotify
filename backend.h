@@ -118,6 +118,41 @@
     }
 
 
+//Pass in document to avoid loading multiple times
+    string getSong(vector<Song> song, rapidcsv::Document doc) {
+        stringstream json;
+        json << "{\n";
+
+        for(int i = 0; i < 7; i++) {
+            json << "    \"artist" << i+1 << "\": \"" << strip(escapeJSON(song[i].artist)) << "\",\n";
+            json << "    \"album" << i+1 << "\": \"" << strip(escapeJSON(song[i].album_name)) << "\",\n";
+            json << "    \"trackName" << i+1 << "\": \"" << strip(escapeJSON(song[i].track_name)) << "\",\n";
+
+            //Two decimals for score etc
+            stringstream score, dance, energy, duration, tempo;
+            score << fixed << setprecision(2) << randomNumber();
+            dance << fixed << setprecision(2) << (song[i].danceability * 100);
+            energy << fixed << setprecision(2) << (song[i].energy * 100);
+            duration << fixed << setprecision(2) << (song[i].duration_ms / 1000.0);
+            tempo << fixed << setprecision(2) << song[i].tempo;
+
+            json << "    \"score" << i+1 << "\": \"" << escapeJSON(score.str()) << "\",\n";
+            json << "    \"genre" << i+1 << "\": \"" << strip(escapeJSON(song[i].genre)) << "\",\n";
+            json << "    \"danceability" << i+1 << "\": \"" << strip(escapeJSON(dance.str())) << "\",\n";
+            json << "    \"energy" << i+1 << "\": \"" << strip(escapeJSON(energy.str())) << "\",\n";
+            json << "    \"duration" << i+1 << "\": \"" << strip(escapeJSON(duration.str())) << "\",\n";
+            json << "    \"tempo" << i+1 << "\": \"" << strip(escapeJSON(tempo.str())) << "\"";
+
+            if(i < 6) {
+                json << ",\n";
+            } else {
+                json << "\n";
+            }
+        }
+
+        json << "}";
+        return json.str();
+    }
 
 
 

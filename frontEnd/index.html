@@ -192,7 +192,7 @@
    
         <div class="container">
         <input type="text" class="card"id="userInput" placeholder="Enter Song Index">
-        <button class="card"onclick="updateSong()">Update Song</button>
+        <button class="card"onclick="updateSong()" onclick="closeSongDetails()">Update Song</button>
 
             <!-- <button class="card" onclick="getSongData()">Update Song</button> -->
         </div>
@@ -218,6 +218,7 @@
 
     <script>
     function updateSong() {
+        closeSongDetails()
         const index = document.getElementById('userInput').value;
         const statusDiv = document.getElementById('status');
         document.getElementById("title").textContent = "Songs Similar to: " + index;
@@ -248,6 +249,8 @@
                 document.getElementById(`song${i}`).setAttribute('data-tempo', data[`tempo${i}`]);
                 document.getElementById(`song${i}`).setAttribute('data-genre', data[`genre${i}`]);
                 document.getElementById(`song${i}`).setAttribute('data-dance', data[`danceability${i}`]);
+                document.getElementById(`song${i}`).setAttribute('data-energy', data[`energy${i}`]);
+
 
 
             }
@@ -264,6 +267,7 @@
 
     //Song card functionality
     function showSongDetails(songId) {
+        //set variables
         const songElement = document.getElementById(`song${songId}`);
         const songName = songElement.textContent;
         const artistName = document.getElementById(`artist${songId}`).textContent;
@@ -272,16 +276,18 @@
         const tempo = songElement.getAttribute('data-tempo');
         const dance = songElement.getAttribute('data-dance');
         const genre = songElement.getAttribute('data-genre');
+        const energy = songElement.getAttribute('data-energy');
 
-
-
+        //assign text elements
         document.getElementById('detailsTitle').textContent = songName;
         document.getElementById('detailsArtist').textContent = `Artist: ${artistName}`;
         document.getElementById('detailsAlbum').textContent = `Album: ${albumName}`;
         document.getElementById('detailsScore').textContent = 'Score: ' + scoreText;
-        document.getElementById('detailsTempo').textContent = `Tempo: ${tempo}BPM`;
+        document.getElementById('detailsTempo').textContent = `Tempo: ${tempo} BPM`;
         document.getElementById('detailsGenre').textContent = `Genre: ${genre}`;
         document.getElementById('detailsDanceability').textContent = `Danceability: ${dance} / 100`;
+        document.getElementById('detailsEnergy').textContent = `Energy: ${energy} / 100`;
+
 
 
 
