@@ -104,6 +104,7 @@
         return escaped;
     }
 
+    //If there are multiple artists, only shows the first
     string strip(const string& str)
     {
         string::size_type start = 0;
