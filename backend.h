@@ -30,9 +30,9 @@
         int time_signature;
         string genre;
 
-        // Parameterized constructor
+        //Base constructor
         Song(const vector<string>& values) {
-            if (values.size() >= 21) {  // Ensure we have all needed values
+            if (values.size() >= 21) {  //Ensure we have all needed values
                 serial = stoi(values[0]);
                 track_id = values[1];
                 artist = values[2];
@@ -57,7 +57,7 @@
             }
         }
 
-        // Default constructor
+        //Default constructor
         // Song()
         //     : serial(0), track_id(""), artist(""), album_name(""), track_name(""),
         //       popularity(""), duration_ms(""), explicit_content(""), danceability(""),
