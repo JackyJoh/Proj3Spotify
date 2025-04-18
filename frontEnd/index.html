@@ -13,20 +13,21 @@
             color: white;
         }
       .container {
-        display: flex;
-            text-align: center;
-            align-items: flex-end;
-            justify-content: center;
-            height: auto;
-            width: auto;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 50px;
+          position: relative;
+          bottom: 5vh;
+          margin-bottom: 20px;
             
         }
 
         .card {
             background-color: #282828;
             padding: 20px;
+            margin: 0px 12px 12px;
             border-radius: 10px;
-            text-align: left;
             transition: background-color 0.3s;
             
         }
@@ -35,40 +36,40 @@
             color: white;
         }
         .tree {
+            margin-top:0.5%;
             display: flex;
             flex-direction: column;
             align-self: center;
             justify-content: center;
             align-items: center;
-            height: auto;;
+
             width: 100%;
             position: relative;
             
   
-        /* #ui {
-            position: absolute;
-            left: 5%;
-            bottom: 5%;
-
-        } */
 
         }
         button {
-            font-weight: bold;
             cursor: pointer;
             transition: background-color 0.3s;
-            position: relative;
-            bottom: 50px;
             color: white;
             
         }
+        #userInput {
+            font-family: 'Helvetica', sans-serif;
+            text-align: center;
+            color: white;
+            width: 12rem;
+            font-size: 14px;
 
-        #ui {
-            position: absolute;
-            left: 5%;
-            bottom: 5%;
         }
-        
+        #status {
+            position: relative;
+            top: 15px;
+
+        }
+
+
         
         
             
@@ -116,7 +117,7 @@
 
     </div> -->
     <div class="tree">
-        <div class="title">Max Heap Representation</div>
+        <div class="title">Songs Similar to: *song name*</div>
     <article class="binary-tree">
         
         <div>
@@ -188,15 +189,18 @@
 
    
         <div class="container">
-        <input type="text" id="userInput" placeholder="Enter Song Index">
+        <input type="text" class="card"id="userInput" placeholder="Enter Song Index">
         <button class="card"onclick="updateSong()">Update Song</button>
-        <div id="status">Status: Ready</div>
+
             <!-- <button class="card" onclick="getSongData()">Update Song</button> -->
         </div>
-        
-        <div class="container">
-            <a href="temp.html" id="ui"class="card" >UI Example</a>  
+        <div class ="container">
+            <div class="card"id="status">Status: Ready</div>
         </div>
+        
+<!--        <div class="container">-->
+<!--            <a href="temp.html" id="ui"class="card" >UI Example</a>  -->
+<!--        </div>-->
 
 
     </body>
