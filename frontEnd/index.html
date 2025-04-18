@@ -206,7 +206,7 @@
         <p id="detailsArtist"></p>
         <p id="detailsAlbum"></p>
         <p id="detailsScore"></p>
-        <p id="detailsDuration">Duration: 3:45</p>
+        <p id="detailsDuration">Duration (min): 270</p>
         <p id="detailsGenre">Genre: Pop</p>
         <p id="detailsTempo">Tempo: 90bpm</p>
         <p id="detailsDanceability">Danceability: 23.3 / 100</p>
@@ -250,6 +250,8 @@
                 document.getElementById(`song${i}`).setAttribute('data-genre', data[`genre${i}`]);
                 document.getElementById(`song${i}`).setAttribute('data-dance', data[`danceability${i}`]);
                 document.getElementById(`song${i}`).setAttribute('data-energy', data[`energy${i}`]);
+                document.getElementById(`song${i}`).setAttribute('data-duration', data[`duration${i}`]);
+
 
 
 
@@ -277,6 +279,9 @@
         const dance = songElement.getAttribute('data-dance');
         const genre = songElement.getAttribute('data-genre');
         const energy = songElement.getAttribute('data-energy');
+        const duration = songElement.getAttribute('data-duration');
+        const seconds = duration % 60;
+        const formattedSeconds = (seconds < 10) ? `0${seconds}` : seconds.toString();
 
         //assign text elements
         document.getElementById('detailsTitle').textContent = songName;
@@ -287,6 +292,8 @@
         document.getElementById('detailsGenre').textContent = `Genre: ${genre}`;
         document.getElementById('detailsDanceability').textContent = `Danceability: ${dance} / 100`;
         document.getElementById('detailsEnergy').textContent = `Energy: ${energy} / 100`;
+        document.getElementById('detailsDuration').textContent = `Duration: ${Math.floor(duration/60)}:${formattedSeconds}`;
+
 
 
 

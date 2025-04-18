@@ -133,7 +133,7 @@
             score << fixed << setprecision(2) << randomNumber();
             dance << fixed << setprecision(2) << (song[i].danceability * 100);
             energy << fixed << setprecision(2) << (song[i].energy * 100);
-            duration << fixed << setprecision(2) << (song[i].duration_ms / 1000.0);
+            duration << fixed << setprecision(0) << (song[i].duration_ms / 1000.0);
             tempo << fixed << setprecision(2) << song[i].tempo;
 
             json << "    \"score" << i+1 << "\": \"" << escapeJSON(score.str()) << "\",\n";
