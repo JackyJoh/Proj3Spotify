@@ -4,6 +4,7 @@
 #include "httplib.h"
 #include "rapidcsv.h"
 #include "backend.h"
+#include "algorithms.h"
 
 
 using namespace std;
@@ -31,8 +32,13 @@ string getSong(int songId, rapidcsv::Document doc) {
 
 
 int main() {
-    httplib::Server svr;
     rapidcsv::Document songs("data/dataset.csv"); //sets the doc to read from
+    vector<Song*> songv(114000);
+    for (int i = 0; i < songv.size(); i++) {
+        songv[i] = new Song(songs.GetRow<string>(i));
+    }
+    //call my function mostSimilar(Song* ref, vector<Song*> allS); where ref is the song used as a reference and allS is songv
+    httplib::Server svr;
 
 
     svr.Options(".*", [](const auto& req, auto& res) {
