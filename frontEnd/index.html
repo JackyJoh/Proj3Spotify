@@ -13,6 +13,7 @@
             color: white;
         }
       .container {
+          transform: scale(0.8);
           display: flex;
           justify-content: center;
           align-items: center;
@@ -70,7 +71,7 @@
         }
 
 
-        
+
         
             
     </style>
@@ -117,39 +118,39 @@
 
     </div> -->
     <div class="tree">
-        <div class="title">Songs Similar to: *song name*</div>
+        <div id="title"class="title">Songs Similar to: *song name*</div>
     <article class="binary-tree">
         
         <div>
             <span class="song-square">
-                <p  id="test" class="song-name">Testing</p>
-                <p class="artist-name">Ross Copperman</p>
-                <p class="album-name">Hunger</p>
-                <p class="score">Score: 8.5</p>
+                <p  id="song1" class="song-name">Song 1 Here</p>
+                <p id="artist1"class="artist-name">Ross Copperman</p>
+                <p id="album1"class="album-name">Hunger</p>
+                <p id="score1"class="score">Score: 8.5</p>
             </span>
           <div>
             <span class="song-square">
-                <p class="song-name">Song Name Here</p>
-                <p class="artist-name">Artist Name</p>
-                <p class="album-name">Album Name</p>
-                <p class="score">Score: 8.5</p>
+                <p id="song2"class="song-name">Song 2 Here</p>
+                <p id="artist2"class="artist-name">Artist Name</p>
+                <p id="album2"class="album-name">Album Name</p>
+                <p id="score2"class="score">Score: 8.5</p>
             </span>
             <div>
                 <span class="song-square">
-                    <p class="song-name">Song Name Here</p>
-                    <p class="artist-name">Artist Name</p>
-                    <p class="album-name">Album Name</p>
-                    <p class="score">Score: 8.5</p>
+                    <p id="song4"class="song-name">Song 4 Here</p>
+                    <p id="artist4"class="artist-name">Artist Name</p>
+                    <p id="album4"class="album-name">Album Name</p>
+                    <p id="score4"class="score">Score: 8.5</p>
                 </span>
               <div></div>
               <div></div>
             </div>
             <div>
                 <span class="song-square">
-                    <p class="song-name">Song Name Here</p>
-                    <p class="artist-name">Artist Name</p>
-                    <p class="album-name">Album Name</p>
-                    <p class="score">Score: 8.5</p>
+                    <p id="song5"class="song-name">Song 5 Here</p>
+                    <p id="artist5"class="artist-name">Artist Name</p>
+                    <p id="album5"class="album-name">Album Name</p>
+                    <p id="score5"class="score">Score: 8.5</p>
                 </span>
               <div></div>
               <div></div>
@@ -157,27 +158,28 @@
           </div>
           <div>
             <span class="song-square">
-                <p class="song-name">Many Men</p>
-                <p class="artist-name">50 Cent</p>
-                <p class="album-name">Get Rich or Die Tryin'</p>
-                <p class="score">Score: 8.5</p>
+                <p id="song3"class="song-name">Song 3 Here</p>
+                <p id="artist3"class="artist-name">Artist Name</p>
+                <p id="album3"class="album-name">Album Name</p>
+                <p id="score3"class="score">Score: 8.5</p>
             </span>
             <div>
                 <span class="song-square">
-                    <p class="song-name">Holding on and Letting Go</p>
-                    <p class="artist-name">Artist Name</p>
-                    <p class="album-name">Album Name</p>
-                    <p class="score">Score: 8.5</p>
+
+                    <p id="song6"class="song-name">Song 6 Here</p>
+                    <p id="artist6"class="artist-name">Artist Name</p>
+                    <p id="album6"class="album-name">Album Name</p>
+                    <p id="score6"class="score">Score: 8.5</p>
                 </span>
               <div></div>
               <div></div>
             </div>
             <div>
                 <span class="song-square">
-                    <p class="song-name">Ghost - Acoustic</p>
-                    <p class="artist-name">Ben Woodard</p>
-                    <p class="album-name">Ghost (Acoustic)</p>
-                    <p class="score">Score: 8.5</p>
+                    <p id="song7"class="song-name">Song 7 Here</p>
+                    <p id="artist7"class="artist-name">Artist Name</p>
+                    <p id="album7"class="album-name">Album Name</p>
+                    <p id="score7"class="score">Score: 8.5</p>
                 </span>
               <div></div>
               <div></div>
@@ -197,10 +199,19 @@
         <div class ="container">
             <div class="card"id="status">Status: Ready</div>
         </div>
-        
-<!--        <div class="container">-->
-<!--            <a href="temp.html" id="ui"class="card" >UI Example</a>  -->
-<!--        </div>-->
+
+    <div class="song-details" id="songDetailsCard">
+        <button class="close-button" onclick="closeSongDetails()">×</button>
+        <h3 id="detailsTitle">Song Details</h3>
+        <p id="detailsArtist"></p>
+        <p id="detailsAlbum"></p>
+        <p id="detailsScore"></p>
+        <p id="detailsDuration">Duration: 3:45</p>
+        <p id="detailsGenre">Genre: Pop</p>
+        <p id="detailsTempo">Tempo: 90bpm</p>
+        <p id="detailsDanceability">Danceability: 23.3 / 100</p>
+        <p id="detailsEnergy">Energy: 89.23 / 100</p>
+    </div>
 
 
     </body>
@@ -209,7 +220,7 @@
     function updateSong() {
         const index = document.getElementById('userInput').value;
         const statusDiv = document.getElementById('status');
-        
+        document.getElementById("title").textContent = "Songs Similar to: " + index;
         
         statusDiv.textContent = 'Status: Sending request...';
 
@@ -226,18 +237,21 @@
 
         .then(response => response.json())
         .then(data => {
-          
-            //Update squares and/or specific elements with the new data
-            const songSquares = document.querySelectorAll('.song-square');
-            songSquares.forEach(square => {
-                square.querySelector('.song-name').textContent = data.trackName;
-                square.querySelector('.artist-name').textContent = data.artist;
-                square.querySelector('.album-name').textContent = data.album;
-                square.querySelector('.score').textContent = `Score: ${data.score}`;
-            });
-             document.getElementById('test').textContent = "Filler Data";
 
-            
+            //Update all song elements using for loop
+            //Way more compact
+            for (let i = 1; i <= 7; i++) {
+                document.getElementById(`song${i}`).textContent = data[`trackName${i}`];
+                document.getElementById(`artist${i}`).textContent = data[`artist${i}`];
+                document.getElementById(`album${i}`).textContent = data[`album${i}`];
+                document.getElementById(`score${i}`).textContent = data[`score${i}`];
+                document.getElementById(`song${i}`).setAttribute('data-tempo', data[`tempo${i}`]);
+                document.getElementById(`song${i}`).setAttribute('data-genre', data[`genre${i}`]);
+                document.getElementById(`song${i}`).setAttribute('data-dance', data[`danceability${i}`]);
+
+
+            }
+
             statusDiv.textContent = 'Status: Updated successfully!';
         })
 
@@ -247,7 +261,48 @@
             statusDiv.textContent = 'Status: Error occurred!';
         });
     }
-    
+
+    //Song card functionality
+    function showSongDetails(songId) {
+        const songElement = document.getElementById(`song${songId}`);
+        const songName = songElement.textContent;
+        const artistName = document.getElementById(`artist${songId}`).textContent;
+        const albumName = document.getElementById(`album${songId}`).textContent;
+        const scoreText = document.getElementById(`score${songId}`).textContent;
+        const tempo = songElement.getAttribute('data-tempo');
+        const dance = songElement.getAttribute('data-dance');
+        const genre = songElement.getAttribute('data-genre');
+
+
+
+        document.getElementById('detailsTitle').textContent = songName;
+        document.getElementById('detailsArtist').textContent = `Artist: ${artistName}`;
+        document.getElementById('detailsAlbum').textContent = `Album: ${albumName}`;
+        document.getElementById('detailsScore').textContent = 'Score: ' + scoreText;
+        document.getElementById('detailsTempo').textContent = `Tempo: ${tempo}BPM`;
+        document.getElementById('detailsGenre').textContent = `Genre: ${genre}`;
+        document.getElementById('detailsDanceability').textContent = `Danceability: ${dance} / 100`;
+
+
+
+
+        document.getElementById('songDetailsCard').style.display = 'block';
+    }
+
+    //closing function
+    function closeSongDetails() {
+        document.getElementById('songDetailsCard').style.display = 'none';
+    }
+
+    //Add click event listeners to all song squares
+    document.querySelectorAll('.song-square').forEach((square) => {
+        square.style.cursor = 'pointer';
+        // Get the actual song ID from the song element's ID
+        const songElement = square.querySelector('[id^="song"]');
+        const songId = songElement.id.replace('song', '');
+        square.addEventListener('click', () => showSongDetails(songId));
+    });
+
 
 
 

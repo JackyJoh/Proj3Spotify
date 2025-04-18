@@ -10,23 +10,31 @@ using namespace std;
 
 
 //Pass in document to avoid loading multiple times
-string getSong(int songId, rapidcsv::Document doc) {
-
-    Song song( doc.GetRow<string>(songId)); //creates a song struct from the 10th row of data
-
+string getSong(vector<Song> song, rapidcsv::Document doc) {
     std::stringstream json;
     json << "{\n";
-    json << "    \"artist\": \"" << strip(escapeJSON(song.artist)) << "\",\n";
-    json << "    \"album\": \"" << strip(escapeJSON(song.album_name)) << "\",\n";
-    json << "    \"trackName\": \"" << strip(escapeJSON(song.track_name)) << "\",\n";
-    json << "    \"score\": \"" << escapeJSON(to_string(randomNumber())) << "\"\n";
+
+    for(int i = 0; i < 7; i++) {
+        json << "    \"artist" << i+1 << "\": \"" << strip(escapeJSON(song[i].artist)) << "\",\n";
+        json << "    \"album" << i+1 << "\": \"" << strip(escapeJSON(song[i].album_name)) << "\",\n";
+        json << "    \"trackName" << i+1 << "\": \"" << strip(escapeJSON(song[i].track_name)) << "\",\n";
+        json << "    \"score" << i+1 << "\": \"" << escapeJSON(to_string(randomNumber())) << "\",\n";
+        json << "    \"genre" << i+1 << "\": \"" << strip(escapeJSON(song[i].genre)) << "\",\n";
+        json << "    \"danceability" << i+1 << "\": \"" << strip(escapeJSON(to_string(song[i].danceability*100))) << "\",\n";
+        json << "    \"energy" << i+1 << "\": \"" << strip(escapeJSON(to_string(100* song[i].energy))) << "\",\n";
+        json << "    \"duration" << i+1 << "\": \"" << strip(escapeJSON(to_string(song[i].duration_ms /1000))) << "\",\n";
+        json << "    \"tempo" << i+1 << "\": \"" << strip(escapeJSON(to_string(song[i].tempo))) << "\"";
+
+        // Add comma if not the last song
+        if(i < 6) {
+            json << ",\n";
+        } else {
+            json << "\n";
+        }
+    }
 
     json << "}";
     return json.str();
-
-    //for all 7 songs make the titles dependent on the node
-    //ex. for node 3, do artist "    \"artist3\": \"" << strip(escapeJSON(song.artist)) << "\",\n";
-    //and in js make id artist3.textContent = data.artist3
 }
 
 
@@ -59,9 +67,16 @@ int main() {
 
             //Create JSON response with song details
             int songIndex = stoi(recieved);
+            vector<Song> arrExample;
+            for (int i =0; i < 64; i++)
+            {
+                arrExample.push_back(Song(songs.GetRow<string>(songIndex+i)));
+            }
             stringstream response;
-            response << getSong(songIndex, songs);
-            //cout << getSong(songIndex, songs)  << endl;
+
+            //pass in vector of 7 songs
+            response << getSong(arrExample, songs);
+            cout << getSong(arrExample, songs)  << endl;
 
 
 
