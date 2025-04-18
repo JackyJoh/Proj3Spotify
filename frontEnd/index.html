@@ -118,7 +118,7 @@
 
     </div> -->
     <div class="tree">
-        <div id="title"class="title">Songs Similar to: *song name*</div>
+        <div id="title"class="title"></div>
     <article class="binary-tree">
         
         <div>
@@ -251,6 +251,7 @@
                 document.getElementById(`song${i}`).setAttribute('data-dance', data[`danceability${i}`]);
                 document.getElementById(`song${i}`).setAttribute('data-energy', data[`energy${i}`]);
                 document.getElementById(`song${i}`).setAttribute('data-duration', data[`duration${i}`]);
+                document.getElementById('title').textContent= data['main'];
 
 
 

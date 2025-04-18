@@ -4,6 +4,7 @@
 #include "httplib.h"
 #include "rapidcsv.h"
 #include "backend.h"
+#include "algorithms.h"
 
 
 using namespace std;
@@ -12,9 +13,14 @@ using namespace std;
 
 
 int main() {
-    httplib::Server svr;
     rapidcsv::Document songs("data/dataset.csv"); //sets the doc to read from
+    vector<Song*> songv(114000);
+    for (int i = 0; i < songv.size(); i++) {
+        songv[i] = new Song(songs.GetRow<string>(i));
+    }
 
+    //call my function mostSimilar(Song* ref, vector<Song*> allS); where ref is the song used as a reference and allS is songv
+    httplib::Server svr;
 
     svr.Options(".*", [](const auto& req, auto& res) {
         //res.set_header("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
@@ -24,7 +30,7 @@ int main() {
         return res.set_content("", "text/plain");
     });
 
-    svr.Post("/updateSong", [songs](const httplib::Request &req, httplib::Response &res) {
+    svr.Post("/updateSong", [songs, &songv](const httplib::Request &req, httplib::Response &res) {
         try {
             res.set_header("Access-Control-Allow-Origin", "http://localhost:63342");
 
@@ -35,28 +41,27 @@ int main() {
             // size_t endQuote = body.find("\"", startQuote + 1);
             string recieved = body;
 
+            //random song testing
+            int random = rand() % 100001;
+            Song* song = songv[random];
+            vector<pair<Song*,float>> inputSongs = mostSimilar(songv[random], songv);
 
-            //TODO: place names of functions below
-            //TODO: FOR WHEN BACKEND IS DONE
-            //Song input = trieFunction(recieved) //takes the input and finds the closest name, returns a song struct
-            //vector<Song> closestSongs = maxHeapFunction(input) //gets the 7 closest songs
-            //response << getSong(closestSongs, songs) //creates the Json with proper data
-
-            //cout << "Received song name: " << receivedSong << endl;
 
 
             //Create JSON response with song details
-            int songIndex = stoi(recieved);
-            vector<Song> arrExample;
-            for (int i =0; i < 64; i++)
-            {
-                arrExample.push_back(Song(songs.GetRow<string>(songIndex+i)));
-            }
+            // int songIndex = stoi(recieved);
+            // vector<Song> arrExample;
+            // for (int i =0; i < 64; i++)
+            // {
+            //     arrExample.push_back(Song(songs.GetRow<string>(songIndex+i)));
+            // }
 
             stringstream response;
+            response << "{\n";
+            response << "    \"main" << "\": \"" << strip(escapeJSON(song->track_name)) << "\",\n";
 
             //pass in vector of 7 songs
-            response << getSong(arrExample, songs);
+            response << getSong(inputSongs);
 
 
             res.set_content(response.str(), "application/json");
