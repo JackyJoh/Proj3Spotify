@@ -53,6 +53,7 @@ public:
     int search(const std::string& word) {
         TrieNode* current = root;
         for (char ch : word) {
+            ch = tolower(ch);
             if (alphabet.count(ch) == 0)
             {
                 continue;
