@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include <cctype>
-#include <set>
+#include <queue>
 #include <string>
 #include <unordered_map>
 
@@ -71,16 +71,19 @@ public:
         {
             return 51216;
         }
+        queue<TrieNode*> q;
+        q.push(current);
         while(!current->isEndOfWord)
         {
             for(char c : alphabet)
             {
                 if(!(current->children.find(c) == current->children.end()))
                 {
-                    current = current->children[c];
-                    break;
+                    q.push(current->children[c]);
                 }
             }
+            q.pop();
+            current = q.front();
         }
         return current->index;
     }
