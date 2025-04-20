@@ -20,7 +20,15 @@ int main() {
         songv[i] = new Song(songs.GetRow<string>(i));
         songTree.insert(songv[i]->track_name, i);
     }
-
+    string test = "the real";
+    string test2 = "The real";
+    string test3 = "The Real";
+    string test4 = "the Real";
+    int search1 = songTree.search(test);
+    int search2 = songTree.search(test2);
+    int search3 = songTree.search(test3);
+    int search4 = songTree.search(test4);
+    cout << songv[search1]->track_name << " " << songv[search2]->track_name << " " << songv[search3]->track_name << " " << songv[search4]->track_name << endl;
     //call search on the trie tree with a string (must be a variable since its a reference) i.e songTree(myString); returns the index of the song in the vector
     //call my function mostSimilar(Song* ref, vector<Song*> allS); where ref is the song used as a reference and allS is songv
     httplib::Server svr;
