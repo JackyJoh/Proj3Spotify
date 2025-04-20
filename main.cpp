@@ -5,7 +5,7 @@
 #include "rapidcsv.h"
 #include "backend.h"
 #include "algorithms.h"
-
+#include "trieTree.h"
 
 using namespace std;
 
@@ -15,10 +15,12 @@ using namespace std;
 int main() {
     rapidcsv::Document songs("data/dataset.csv"); //sets the doc to read from
     vector<Song*> songv(114000);
+    Trie songTree;
     for (int i = 0; i < songv.size(); i++) {
         songv[i] = new Song(songs.GetRow<string>(i));
+        songTree.insert(songv[i]->track_name, i);
     }
-
+    //call search on the trie tree with a string (must be a variable since its a reference) i.e songTree(myString); returns the index of the song in the vector
     //call my function mostSimilar(Song* ref, vector<Song*> allS); where ref is the song used as a reference and allS is songv
     httplib::Server svr;
 
