@@ -2,11 +2,10 @@ COP3530 Proj3Spotify
 
 *Launching Project Locally*
 
-Assuming all extensions/apps are installed:
-Edit the "Proj3Spotify" run configuration and add the following to "Before Launch" if not already configured:
-"Launch Web Browser" with it set to this link: http://localhost:63342/Proj3Spotify/frontEnd/index.html
-Also make sure to remove the "build" step in before launch to reduce launch time.
-Then to run just press run and it should take you to the local web page and the server should boot, allowing you to easily test the current version.
+On CLION:
+Edit the run configuration. In the "before launch" section, remove the build phase and add the following:
+"Launch Web Browser" with the link set to http://localhost:63342/Proj3Spotify/frontEnd/index.html
+Then to run first build it and then just press the run button. This should launch the website and the server at the same time.
 
 
 
