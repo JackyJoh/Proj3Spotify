@@ -66,7 +66,7 @@
         }
         #status {
             position: relative;
-            top: 15px;
+            top: 7px;
 
         }
 
@@ -118,7 +118,8 @@
 
     </div> -->
     <div class="tree">
-        <div id="title"class="title"></div>
+        <div id="title"class="title">Songs similar to:</div>
+        <div id="artist">by:</div>
     <article class="binary-tree">
         
         <div>
@@ -193,6 +194,8 @@
         <div class="container">
         <input type="text" class="card"id="userInput" placeholder="Enter Song Name">
         <button class="card"onclick="updateSong()" onclick="closeSongDetails()">Update Song</button>
+        <button class="card" onclick="randomSong()"onclick="closeSongDetails()">Random Song</button>
+
 
             <!-- <button class="card" onclick="getSongData()">Update Song</button> -->
         </div>
@@ -221,7 +224,7 @@
         closeSongDetails()
         const index = document.getElementById('userInput').value;
         const statusDiv = document.getElementById('status');
-        document.getElementById("title").textContent = "Songs Similar to: " + index;
+        // document.getElementById("title").textContent = "Songs Similar to: " + index;
         
         statusDiv.textContent = 'Status: Sending request...';
 
@@ -252,6 +255,8 @@
                 document.getElementById(`song${i}`).setAttribute('data-energy', data[`energy${i}`]);
                 document.getElementById(`song${i}`).setAttribute('data-duration', data[`duration${i}`]);
                 document.getElementById('title').textContent= 'Songs Similar to: ' + data['main'];
+                document.getElementById('artist').textContent= 'by: ' + data['main2'];
+
 
 
 
@@ -266,6 +271,57 @@
             console.error('Error:', error);
             statusDiv.textContent = 'Status: Error occurred!';
         });
+    }
+    function randomSong() {
+        closeSongDetails()
+        const statusDiv = document.getElementById('status');
+        // document.getElementById("title").textContent = "Songs Similar to: " + index;
+
+        statusDiv.textContent = 'Status: Sending request...';
+
+        //Send request to server
+        fetch('http://localhost:8080/updateSong', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(("random"))
+        })
+
+            .then(response => response.json())
+            .then(data => {
+
+                //Update all song elements using for loop
+                //Way more compact
+                for (let i = 1; i <= 7; i++) {
+                    document.getElementById(`song${i}`).textContent = data[`trackName${i}`];
+                    document.getElementById(`artist${i}`).textContent = data[`artist${i}`];
+                    document.getElementById(`album${i}`).textContent = data[`album${i}`];
+                    document.getElementById(`score${i}`).textContent = data[`score${i}`];
+                    document.getElementById(`song${i}`).setAttribute('data-tempo', data[`tempo${i}`]);
+                    document.getElementById(`song${i}`).setAttribute('data-genre', data[`genre${i}`]);
+                    document.getElementById(`song${i}`).setAttribute('data-dance', data[`danceability${i}`]);
+                    document.getElementById(`song${i}`).setAttribute('data-energy', data[`energy${i}`]);
+                    document.getElementById(`song${i}`).setAttribute('data-duration', data[`duration${i}`]);
+                    document.getElementById('title').textContent= 'Songs Similar to: ' + data['main'];
+                    document.getElementById('artist').textContent= 'by: ' + data['main2'];
+
+
+
+
+
+                }
+
+                statusDiv.textContent = 'Status: Updated successfully!';
+            })
+
+            //Error status
+            .catch(error => {
+                console.error('Error:', error);
+                statusDiv.textContent = 'Status: Error occurred!';
+            });
     }
 
     //Song card functionality

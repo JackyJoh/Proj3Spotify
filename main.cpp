@@ -10,6 +10,9 @@
 
 using namespace std;
 
+#include <random>
+#include <ctime>
+
 
 
 
@@ -41,8 +44,16 @@ int main() {
 
             string body = req.body;
             string recieved = body;
+
             //cout << recieved << "\n";
-            int index = songTree.search(recieved);
+            int index;
+            if (recieved == "\"random\"")
+            {
+                index = rand() % songv.size() - 1;
+            } else
+            {
+                index = songTree.search(recieved);
+            }
             Song* song = songv[index];
             vector<pair<Song*,float>> inputSongs = mostSimilar(songv[index], songv);
 
@@ -50,6 +61,8 @@ int main() {
             stringstream response;
             response << "{\n";
             response << "    \"main" << "\": \"" << strip(escapeJSON(song->track_name)) << "\",\n";
+            response << "    \"main2" << "\": \"" << strip(escapeJSON(song->artist)) << "\",\n";
+
             //pass in vector of 7 songs
             response << getSong(inputSongs);
 

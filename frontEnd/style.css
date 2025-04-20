@@ -94,6 +94,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 .album-name {
@@ -120,13 +121,26 @@
 
 .title {
     color: #ffffff;
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: bold;
-    margin-top: 30px;
-    margin-bottom: 20px;
+    margin-top: 20px;
+    margin-bottom: 5px;
     text-align: center;
     display: flex;
 }
+
+
+
+#artist {
+    font-size: 1.3rem;
+    font-style: italic;
+    margin-bottom: 20px;
+    text-align: center;
+    display: flex;
+
+
+}
+
 
 .song-details {
     position: fixed;

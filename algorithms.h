@@ -105,10 +105,10 @@ float getScore(Song* ref, Song* comp) {
     if (comp->explicit_content == ref->explicit_content) {
         score += 0.05;
     }
-    if (comp->valence/ref->valence >= 0.9 && comp->valence/ref->valence <= 1.1) {
+    if (fabs(comp->valence-ref->valence) < 0.1) {
         score += 0.1;
     }
-    if (comp->energy/ref->energy >= 0.9 && comp->energy/ref->energy <= 1.1) {
+    if (fabs(comp->energy-ref->energy) < 0.1) {
         score += 0.15;
     }
     if (fabs(comp->danceability - ref->danceability) <= 0.1) {
