@@ -124,20 +124,21 @@
         // json << "{\n";
 
         for(int i = 0; i < 7; i++) {
-            json << "    \"artist" << i+1 << "\": \"" << strip(escapeJSON(song[i].first->artist)) << "\",\n";
-            json << "    \"album" << i+1 << "\": \"" << strip(escapeJSON(song[i].first->album_name)) << "\",\n";
-            json << "    \"trackName" << i+1 << "\": \"" << strip(escapeJSON(song[i].first->track_name)) << "\",\n";
+            int reverse = song.size() - 1 - i;
+            json << "    \"artist" << i+1 << "\": \"" << strip(escapeJSON(song[reverse].first->artist)) << "\",\n";
+            json << "    \"album" << i+1 << "\": \"" << strip(escapeJSON(song[reverse].first->album_name)) << "\",\n";
+            json << "    \"trackName" << i+1 << "\": \"" << strip(escapeJSON(song[reverse].first->track_name)) << "\",\n";
 
             //Two decimals for score etc
             stringstream score, dance, energy, duration, tempo;
-            score << fixed << setprecision(2) << song[i].second;
-            dance << fixed << setprecision(2) << (song[i].first->danceability * 100);
-            energy << fixed << setprecision(2) << (song[i].first->energy * 100);
-            duration << fixed << setprecision(0) << (song[i].first->duration_ms / 1000.0);
-            tempo << fixed << setprecision(2) << song[i].first->tempo;
+            score << fixed << setprecision(2) << song[reverse].second;
+            dance << fixed << setprecision(2) << (song[reverse].first->danceability * 100);
+            energy << fixed << setprecision(2) << (song[reverse].first->energy * 100);
+            duration << fixed << setprecision(0) << (song[reverse].first->duration_ms / 1000.0);
+            tempo << fixed << setprecision(2) << song[reverse].first->tempo;
 
             json << "    \"score" << i+1 << "\": \"" << escapeJSON(score.str()) << "\",\n";
-            json << "    \"genre" << i+1 << "\": \"" << strip(escapeJSON(song[i].first->genre)) << "\",\n";
+            json << "    \"genre" << i+1 << "\": \"" << strip(escapeJSON(song[reverse].first->genre)) << "\",\n";
             json << "    \"danceability" << i+1 << "\": \"" << strip(escapeJSON(dance.str())) << "\",\n";
             json << "    \"energy" << i+1 << "\": \"" << strip(escapeJSON(energy.str())) << "\",\n";
             json << "    \"duration" << i+1 << "\": \"" << strip(escapeJSON(duration.str())) << "\",\n";

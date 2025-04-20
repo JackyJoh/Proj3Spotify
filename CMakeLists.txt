@@ -9,7 +9,9 @@ include_directories(${PROJECT_SOURCE_DIR})
 # Add executable
 add_executable(Proj3Spotify
         main.cpp
-        backend.h)
+        backend.h
+        trieTree.h
+)
 
 # Add Windows socket libraries
 target_link_libraries(Proj3Spotify wsock32 ws2_32)

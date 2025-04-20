@@ -124,8 +124,8 @@
         <div>
             <span class="song-square">
                 <p  id="song1" class="song-name">Song 1 Here</p>
-                <p id="artist1"class="artist-name">Ross Copperman</p>
-                <p id="album1"class="album-name">Hunger</p>
+                <p id="artist1"class="artist-name">Artist Name</p>
+                <p id="album1"class="album-name">Album Name</p>
                 <p id="score1"class="score">Score: 8.5</p>
             </span>
           <div>
@@ -191,7 +191,7 @@
 
    
         <div class="container">
-        <input type="text" class="card"id="userInput" placeholder="Enter Song Index">
+        <input type="text" class="card"id="userInput" placeholder="Enter Song Name">
         <button class="card"onclick="updateSong()" onclick="closeSongDetails()">Update Song</button>
 
             <!-- <button class="card" onclick="getSongData()">Update Song</button> -->
@@ -233,7 +233,7 @@
                 'Accept': 'application/json'
             },
             credentials: 'same-origin',
-            body: JSON.stringify(parseInt(index))
+            body: JSON.stringify((index))
         })
 
         .then(response => response.json())
@@ -251,7 +251,7 @@
                 document.getElementById(`song${i}`).setAttribute('data-dance', data[`danceability${i}`]);
                 document.getElementById(`song${i}`).setAttribute('data-energy', data[`energy${i}`]);
                 document.getElementById(`song${i}`).setAttribute('data-duration', data[`duration${i}`]);
-                document.getElementById('title').textContent= data['main'];
+                document.getElementById('title').textContent= 'Songs Similar to: ' + data['main'];
 
 
 

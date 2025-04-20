@@ -8,14 +8,17 @@
 #include "backend.h"
 #include "rapidcsv.h"
 #include <cmath>
+#include <unordered_set>
 
 using namespace std;
 
 class minHeap {
     vector<pair<Song*, float>> songs;
+    int size;
     public:
         minHeap(int n) {
             songs.resize(n);
+            size = n;
         }
         pair<Song*, float> extract() {
             return songs[0];
@@ -55,105 +58,85 @@ class minHeap {
             songs[0] = p;
             heapifyDown(songs[0], 0);
         }
+        void pop() {
+            songs[0] = songs[songs.size() - 1];
+            songs.erase(songs.begin() + songs.size() - 1);
+            size--;
+            heapifyDown(songs[0], 0);
+        }
         vector<pair<Song*, float>> getSongs() {
-            return songs;
+            vector<pair<Song*, float>> orderedsongs(size);
+            int index = 0;
+            while (size > 0) {
+                orderedsongs[index] = extract();
+                index++;
+                pop();
+            }
+            return orderedsongs;
         }
 };
 
-// float getScore(Song* ref, Song* comp) {
-//     float score = 0;
-//     if (ref->artist == comp->artist) {
-//         if (ref->album_name == comp->album_name) {
-//             score += 0.3;
-//         } else {
-//             score += 0.2;
-//         }
-//     }
-//     if (comp->loudness/ref->loudness >= 0.9 && comp->loudness/ref->loudness <= 1.1) {
-//         score += 0.1;
-//     } else if (comp->loudness/ref->loudness >= 0.8 && comp->loudness/ref->loudness <= 1.2) {
-//         score += 0.05;
-//     }
-//     if (comp->genre == ref->genre) {
-//         score += 0.1;
-//     }
-//     if (comp->tempo/ref->tempo >= 0.9 && comp->tempo/ref->tempo <= 1.1) {
-//         score += 0.15;
-//     } else if (comp->tempo/ref->tempo >= 0.8 && comp->tempo/ref->tempo <= 1.2) {
-//         score += 0.05;
-//     }
-//     if (comp->mode == ref->mode) {
-//         if (comp->mode == 1) {
-//             score += 0.15;
-//         } else {
-//             score += 0.05;
-//         }
-//     }
-//     if (comp->time_signature == ref->time_signature) {
-//         score += 0.1;
-//     }
-//     if (comp->liveness/ref->liveness >= 0.9 && comp->liveness/ref->liveness <= 1.1) {
-//         score += 0.1;
-//     }
-//     return score;
-// }
-// Added artist and album boosts
 float getScore(Song* ref, Song* comp) {
     float score = 0;
-    float albumBoost=1;
-    float artistBoost=1;
-    // Artist and album matching (0.25 total)
     if (ref->artist == comp->artist) {
-        score += 0.12;
-        albumBoost = 1.05;
         if (ref->album_name == comp->album_name) {
-            score += 0.10;
-            albumBoost = 1.05;
+            score += 0.35;
+        } else {
+            score += 0.25;
         }
     }
-
-    // Genre matching (0.20)
-    if (comp->genre == ref->genre) {
-        score += 0.20;
+    if (fabs(comp->loudness - ref->loudness) < 0.1) {
+        score += 0.1;
     }
-
-    // Tempo difference (0.15)
-    float tempoDiff = abs(1 - (comp->tempo / ref->tempo));
-    score += (0.15f * (1 - tempoDiff));
-
-    // Loudness difference (0.10)
-    float loudnessDiff = abs(1 - (comp->loudness / ref->loudness));
-    score += (0.10f * (1 - loudnessDiff));
-
-    // Mode and time signature (0.10 total)
-    if (comp->mode == ref->mode) {
+    if (comp->genre == ref->genre) {
+        score += 0.5;
+    }
+    if (comp->tempo/ref->tempo >= 0.9 && comp->tempo/ref->tempo <= 1.1) {
+        score += 0.15;
+    } else if (comp->tempo/ref->tempo >= 0.8 && comp->tempo/ref->tempo <= 1.2) {
         score += 0.05;
+    }
+    if (comp->mode == ref->mode && comp->mode == 0) {
+        score += 0.15;
     }
     if (comp->time_signature == ref->time_signature) {
+        score += 0.1;
+    }
+    if (comp->explicit_content == ref->explicit_content) {
         score += 0.05;
     }
-
-    // Liveness and energy differences (0.20 total)
-    float livenessDiff = abs(1 - (comp->liveness / ref->liveness));
-    score += (0.10f * (1 - livenessDiff));
-
-    float energyDiff = abs(1 - (comp->energy / ref->energy));
-    score += (0.10f * (1 - energyDiff));
-
-    return score * albumBoost * artistBoost; // Total possible score = 1.0
+    if (comp->valence/ref->valence >= 0.9 && comp->valence/ref->valence <= 1.1) {
+        score += 0.1;
+    }
+    if (comp->energy/ref->energy >= 0.9 && comp->energy/ref->energy <= 1.1) {
+        score += 0.15;
+    }
+    if (fabs(comp->danceability - ref->danceability) <= 0.1) {
+        score += 0.05;
+    }
+    return score;
 }
 
 vector<pair<Song*, float>> mostSimilar(Song* ref, vector<Song*>& allS) {
     minHeap mh(7);
+    unordered_set<string> seen;
     for (int i = 0; i < 7; i++) {
+        if (seen.count(allS[i]->track_name) == 1) {
+            continue;
+        }
         pair<Song*, float> p(allS[i], getScore(ref, allS[i]));
         mh.insertInit(p, i);
+        seen.insert(allS[i]->track_name);
     }
     for (int i = 7; i < allS.size(); i++) {
+        if (seen.count(allS[i]->track_name) == 1) {
+            continue;
+        }
         pair<Song*, float> p(allS[i], getScore(ref, allS[i]));
         if (p.second > mh.extract().second && p.first != ref) {
             mh.insert(p);
         }
+        seen.insert(allS[i]->track_name);
     }
     return mh.getSongs();
 }
