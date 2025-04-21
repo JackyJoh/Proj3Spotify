@@ -37,15 +37,6 @@ int main() {
     for (int i = 0; i < songv.size(); i++) {
         songv[i] = new Song(songs.GetRow<string>(i));
     }
-    string track;
-    getline(cin, track);
-    vector<pair<Song*, float>> test = mostSimilar(songv[stoi(track)], songv);
-
-    cout << songv[stoi(track)]->track_name << "\n";
-    for (int i = 0; i < test.size(); i++) {
-        cout << test[i].first->track_name << ": "  << test[i].first->artist << ": " << test[i].second << "\n";
-    }
-
     //call my function mostSimilar(Song* ref, vector<Song*> allS); where ref is the song used as a reference and allS is songv
     httplib::Server svr;
 

@@ -141,4 +141,66 @@ vector<pair<Song*, float>> mostSimilar(Song* ref, vector<Song*>& allS) {
     return mh.getSongs();
 }
 
+void merge(vector<pair<Song*, float>>& songs, int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+    vector<pair<Song*, float>> L(n1);
+    vector<pair<Song*, float>> R(n2);
+    for (int i = 0; i < n1; i++) {
+        L[i] = songs[left + i];
+    }
+    for (int i = 0; i < n2; i++) {
+        R[i] = songs[mid + 1 + i];
+    }
+    int i = 0;
+    int j = 0;
+    int k = left;
+    while (i < n1 && j < n2) {
+        if (L[i].second >= R[j].second) {
+            songs[k] = L[i];
+            i++;
+        } else {
+            songs[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+    while (i < n1) {
+        songs[k] = L[i];
+        i++;
+        k++;
+    }
+    while (j < n2) {
+        songs[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergeSort(vector<pair<Song*, float>>& songs, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergeSort(songs, left, mid);
+        mergeSort(songs, mid + 1, right);
+        merge(songs, left, mid, right);
+    }
+}
+
+vector<pair<Song*, float>> mostSimilarMerge(Song* ref, vector<Song*>& allS) {
+    vector<pair<Song*, float>> allSongs;
+    unordered_set<string> seen;
+    for (int i = 0; i < allS.size(); i++) {
+        if (seen.count(allS[i]->track_name) == 0 && ref->track_name != allS[i]->track_name) {
+            pair<Song*, float> p(allS[i], getScore(ref, allS[i]));
+            allSongs.push_back(p);
+            seen.insert(allS[i]->track_name);
+        }
+    }
+    mergeSort(allSongs, 0, allSongs.size() - 1);
+    vector<pair<Song*, float>> topSeven(7);
+    for (int i = 6; i >= 0; i--) {
+        topSeven[6 - i] = allSongs[i];
+    }
+    return topSeven;
+}
 #endif //ALGORITHMS_H
