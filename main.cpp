@@ -44,18 +44,21 @@ int main() {
 
             string body = req.body;
             string recieved = body;
-
+            vector<pair<Song*,float>> inputSongs;
+            Song* song;
             //cout << recieved << "\n";
             int index;
             if (recieved == "\"random\"")
             {
                 index = rand() % songv.size() - 1;
+                song = songv[index];
+                inputSongs = mostSimilarMerge(songv[index], songv);
             } else
             {
                 index = songTree.search(recieved);
+                song = songv[index];
+                inputSongs = mostSimilar(songv[index], songv);
             }
-            Song* song = songv[index];
-            vector<pair<Song*,float>> inputSongs = mostSimilar(songv[index], songv);
 
 
             stringstream response;
