@@ -6,7 +6,8 @@ On CLION:
 Edit the run configuration. In the "before launch" section, remove the build phase and add the following:
 "Launch Web Browser" with the link set to http://localhost:63342/Proj3Spotify/frontEnd/index.html
 Then to run first build it and then just press the run button. This should launch the website and the server at the same time.
-
+IF ON MacOS:
+remove the last line in CMakeLists where it says "Add windows socket libraries"
 
 
 *Song Struct*
