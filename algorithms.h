@@ -78,43 +78,78 @@ class minHeap {
 
 float getScore(Song* ref, Song* comp) {
     float score = 0;
+    float maxScore = 1.0;
+    float artistWeight = 0.2;
+    float albumWeight = 0.1;
+    float loudnessWeight = 0.05;
+    float genreWeight = 0.2;
+    float tempoWeight = 0.1;
+    float modeWeight = 0.05;
+    float timeSignatureWeight = 0.05;
+    float explicitWeight = 0.05;
+    float valenceWeight = 0.05;
+    float energyWeight = 0.1;
+    float danceabilityWeight = 0.05;
+
+    // Artist and album match
     if (ref->artist == comp->artist) {
+        score += artistWeight;
         if (ref->album_name == comp->album_name) {
-            score += 0.35;
-        } else {
-            score += 0.25;
+            score += albumWeight;
         }
     }
-    if (fabs(comp->loudness - ref->loudness) < 0.1) {
-        score += 0.1;
+
+    //Loudness similarity
+    float loudnessDiff = fabs((comp->loudness - ref->loudness) / ref->loudness);
+    if (loudnessDiff <= 0.1) {
+        score += loudnessWeight * (1 - loudnessDiff);
     }
+
+    // Genre match
     if (comp->genre == ref->genre) {
-        score += 0.5;
+        score += genreWeight;
     }
-    if (comp->tempo/ref->tempo >= 0.9 && comp->tempo/ref->tempo <= 1.1) {
-        score += 0.15;
-    } else if (comp->tempo/ref->tempo >= 0.8 && comp->tempo/ref->tempo <= 1.2) {
-        score += 0.05;
+
+    //Tempo similarity
+    float tempoDiff = fabs((comp->tempo - ref->tempo) / ref->tempo);
+    if (tempoDiff <= 0.2) {
+        score += tempoWeight * (1 - tempoDiff);
     }
+
+    //Mode match
     if (comp->mode == ref->mode && comp->mode == 0) {
-        score += 0.15;
+        score += modeWeight;
     }
+
+    //Time signature match
     if (comp->time_signature == ref->time_signature) {
-        score += 0.1;
+        score += timeSignatureWeight;
     }
+
+    //Explicit content match
     if (comp->explicit_content == ref->explicit_content) {
-        score += 0.05;
+        score += explicitWeight;
     }
-    if (comp->valence/ref->valence >= 0.9 && comp->valence/ref->valence <= 1.1) {
-        score += 0.1;
+
+    //Valence similarity
+    float valenceDiff = fabs((comp->valence - ref->valence) / ref->valence);
+    if (valenceDiff <= 0.1) {
+        score += valenceWeight * (1 - valenceDiff);
     }
-    if (comp->energy/ref->energy >= 0.9 && comp->energy/ref->energy <= 1.1) {
-        score += 0.15;
+
+    //Energy similarity
+    float energyDiff = fabs((comp->energy - ref->energy) / ref->energy);
+    if (energyDiff <= 0.1) {
+        score += energyWeight * (1 - energyDiff);
     }
-    if (fabs(comp->danceability - ref->danceability) <= 0.1) {
-        score += 0.05;
+
+    //Danceability similarity
+    float danceabilityDiff = fabs((comp->danceability - ref->danceability) / ref->danceability);
+    if (danceabilityDiff <= 0.1) {
+        score += danceabilityWeight * (1 - danceabilityDiff);
     }
-    return score;
+
+    return score * 100;
 }
 
 vector<pair<Song*, float>> mostSimilar(Song* ref, vector<Song*>& allS) {

@@ -135,9 +135,9 @@
             dance << fixed << setprecision(2) << (song[reverse].first->danceability * 100);
             energy << fixed << setprecision(2) << (song[reverse].first->energy * 100);
             duration << fixed << setprecision(0) << (song[reverse].first->duration_ms / 1000.0);
-            tempo << fixed << setprecision(2) << song[reverse].first->tempo;
+            tempo << fixed << setprecision(1) << song[reverse].first->tempo;
 
-            json << "    \"score" << i+1 << "\": \"" << escapeJSON(score.str()) << "\",\n";
+            json << "    \"score" << i+1 << "\": \"" << escapeJSON(score.str()) << "%\",\n";
             json << "    \"genre" << i+1 << "\": \"" << strip(escapeJSON(song[reverse].first->genre)) << "\",\n";
             json << "    \"danceability" << i+1 << "\": \"" << strip(escapeJSON(dance.str())) << "\",\n";
             json << "    \"energy" << i+1 << "\": \"" << strip(escapeJSON(energy.str())) << "\",\n";
