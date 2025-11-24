@@ -31,7 +31,10 @@ int main() {
     httplib::Server svr;
 
     svr.Options(".*", [](const auto& req, auto& res) {
-        res.set_header("Access-Control-Allow-Origin", "http://localhost:63342");
+        std::string origin = req.has_header("Origin") ? req.get_header_value("Origin") : "";
+        if (origin == "http://localhost:63342" || origin == "http://127.0.0.1:5500") {
+            res.set_header("Access-Control-Allow-Origin", origin);
+        }
         res.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         res.set_header("Access-Control-Allow-Headers", "Content-Type");
         return res.set_content("", "text/plain");
@@ -39,27 +42,25 @@ int main() {
 
     svr.Post("/updateSong", [&songv, &songTree](const httplib::Request &req, httplib::Response &res) {
         try {
-            res.set_header("Access-Control-Allow-Origin", "http://localhost:63342");
-
+            std::string origin = req.has_header("Origin") ? req.get_header_value("Origin") : "";
+            if (origin == "http://localhost:63342" || origin == "http://127.0.0.1:5500") {
+                res.set_header("Access-Control-Allow-Origin", origin);
+            }
 
             string body = req.body;
             string recieved = body;
-            vector<pair<Song*,float>> inputSongs;
-            Song* song;
+
             //cout << recieved << "\n";
             int index;
             if (recieved == "\"random\"")
             {
                 index = rand() % songv.size() - 1;
-                song = songv[index];
-                inputSongs = mostSimilarMerge(songv[index], songv);
             } else
             {
                 index = songTree.search(recieved);
-                song = songv[index];
-                inputSongs = mostSimilar(songv[index], songv);
             }
-
+            Song* song = songv[index];
+            vector<pair<Song*,float>> inputSongs = mostSimilar(songv[index], songv);
 
             stringstream response;
             response << "{\n";
